@@ -1,0 +1,61 @@
+CREATE DATABASE `powerjob` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+
+-- powerjob.eventoscoupa definição
+
+CREATE TABLE eventoscoupa (
+  idevento INT NOT NULL,
+  link VARCHAR(255) NOT NULL,
+  dtinicio DATE NOT NULL,
+  dtfim DATE NOT NULL,
+  dtinsercao DATE NOT NULL DEFAULT (CURDATE()),
+  cotacao_incluida TINYINT(1) NOT NULL DEFAULT 0,
+
+  PRIMARY KEY (idevento),
+
+  KEY idx_dtinicio (dtinicio),
+  KEY idx_dtfim (dtfim),
+  KEY idx_cotacao_incluida (cotacao_incluida)
+
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_0900_ai_ci;
+
+
+
+-- powerjob.cotacoescoupa definição
+
+CREATE TABLE cotacoescoupa (
+  idcotacao INT NOT NULL,
+  idevento INT NOT NULL,
+
+  descricao TEXT,
+  quantidade DECIMAL(10,0),
+  dtinicio DATE,
+  dtfim DATE,
+  localentrega TEXT,
+  detalhes TEXT,
+  valorcotacao DECIMAL(10,0),
+  responsavel VARCHAR(100),
+  dtcotacao DATE,
+  status TINYINT NOT NULL DEFAULT 0,
+
+  PRIMARY KEY (idcotacao),
+
+  KEY idx_idevento (idevento),
+  KEY idx_dtinicio (dtinicio),
+  KEY idx_dtcotacao (dtcotacao),
+  KEY idx_status (status),
+  KEY idx_responsavel (responsavel),
+
+  CONSTRAINT fk_cotacoescoupa_evento
+    FOREIGN KEY (idevento)
+    REFERENCES eventoscoupa (idevento)
+    ON UPDATE CASCADE
+    ON DELETE RESTRICT
+
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_0900_ai_ci;
+
+
+
