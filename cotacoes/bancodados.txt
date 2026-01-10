@@ -1,6 +1,7 @@
 CREATE DATABASE `powerjob` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 
 -- powerjob.eventoscoupa definição
+-------------------------------------------------------------------------
 
 CREATE TABLE eventoscoupa (
   idevento INT NOT NULL,
@@ -23,6 +24,7 @@ CREATE TABLE eventoscoupa (
 
 
 -- powerjob.cotacoescoupa definição
+-------------------------------------------------------------------------
 
 CREATE TABLE cotacoescoupa (
   idcotacao INT NOT NULL,
@@ -57,5 +59,138 @@ CREATE TABLE cotacoescoupa (
   DEFAULT CHARSET=utf8mb4
   COLLATE=utf8mb4_0900_ai_ci;
 
+-------------------------------------------------------------------------
+CREATE TABLE empresas (
+  idempresa INT NOT NULL AUTO_INCREMENT,
+
+  nome VARCHAR(150) NOT NULL,
+  telefone VARCHAR(20),
+  documento VARCHAR(20),
+  responsavel VARCHAR(150),
+  email VARCHAR(150),
+
+  stativa TINYINT(1) NOT NULL DEFAULT 1,
+
+  dtcriacao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  dtatualizacao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+                    ON UPDATE CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (idempresa),
+
+  UNIQUE KEY uk_empresas_documento (documento),
+  KEY idx_empresas_nome (nome),
+  KEY idx_empresas_email (email),
+  KEY idx_empresas_stativa (stativa)
+
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_0900_ai_ci;
+
+
+--------------------------------------------------------------------------
+CREATE TABLE empresas_usuarios (
+  idusuario INT NOT NULL AUTO_INCREMENT,
+  idempresa INT NOT NULL,
+  idtipo INT NOT NULL,
+
+  nome VARCHAR(150) NOT NULL,
+  email VARCHAR(150) NOT NULL,
+  senha_hash CHAR(60) NOT NULL,
+
+  stativo TINYINT(1) NOT NULL DEFAULT 1,
+
+  dtcriacao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  dtatualizacao DATETIME NOT NULL
+      DEFAULT CURRENT_TIMESTAMP
+      ON UPDATE CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (idusuario),
+
+  KEY idx_empresas_usuarios_empresa (idempresa),
+  KEY idx_empresas_usuarios_tipo (idtipo),
+  KEY idx_empresas_usuarios_stativo (stativo),
+
+  CONSTRAINT fk_empresas_usuarios_empresa
+    FOREIGN KEY (idempresa)
+    REFERENCES empresas (idempresa)
+    ON UPDATE CASCADE
+    ON DELETE RESTRICT,
+
+  CONSTRAINT fk_empresas_usuarios_tipo
+    FOREIGN KEY (idtipo)
+    REFERENCES usuarios_tipo (idtipo)
+    ON UPDATE CASCADE
+    ON DELETE RESTRICT
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci;
+
+
+
+--------------------------------------------------------------------------
+CREATE TABLE usuarios_tipo (
+  idtipo INT NOT NULL AUTO_INCREMENT,
+
+  descricao VARCHAR(100) NOT NULL,
+
+  stativo TINYINT(1) NOT NULL DEFAULT 1,
+
+  dtcriacao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  dtatualizacao DATETIME NOT NULL
+      DEFAULT CURRENT_TIMESTAMP
+      ON UPDATE CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (idtipo)
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci;
+
+
+INSERT INTO usuarios_tipo (descricao, stativo)
+VALUES
+  ('Administrador', 1),
+  ('Cotador', 1);
+
+
+
+---------------------------------------------------------------------------
+CREATE TABLE tipo_cotacoes (
+  idtipocotacao INT NOT NULL AUTO_INCREMENT,
+  nome VARCHAR(100) NOT NULL,
+  stativo TINYINT(1) NOT NULL DEFAULT 1,
+  dtcriacao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  dtexclusao DATETIME NULL,
+
+  PRIMARY KEY (idtipocotacao)
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci;
+
+
+---------------------------------------------------------------------------
+CREATE TABLE cotacoes_status (
+  idstatus INT NOT NULL AUTO_INCREMENT,
+  nome VARCHAR(100) NOT NULL,
+  stativo TINYINT(1) NOT NULL DEFAULT 1,
+  dtcriacao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  dtatualizacao DATETIME NOT NULL
+      DEFAULT CURRENT_TIMESTAMP
+      ON UPDATE CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (idstatus)
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO cotacoes_status (nome, stativo)
+VALUES
+  ('Inicial', 1),
+  ('Em cotação', 1),
+  ('Realizada', 1),
+  ('Cancelada', 1);
 
 
