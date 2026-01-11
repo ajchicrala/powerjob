@@ -194,3 +194,95 @@ VALUES
   ('Cancelada', 1);
 
 
+----------------------------------------------------------------------------
+CREATE TABLE empresas_eventos (
+  idempresa INT NOT NULL,
+  idevento INT NOT NULL,
+
+  dtcriacao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (idempresa, idevento),
+
+  KEY idx_empresa_eventos_empresa (idempresa),
+  KEY idx_empresa_eventos_evento (idevento),
+
+  CONSTRAINT fk_empresa_eventos_empresa
+    FOREIGN KEY (idempresa)
+    REFERENCES empresas (idempresa)
+    ON UPDATE CASCADE
+    ON DELETE RESTRICT,
+
+  CONSTRAINT fk_empresa_eventos_evento
+    FOREIGN KEY (idevento)
+    REFERENCES eventoscoupa (idevento)
+    ON UPDATE CASCADE
+    ON DELETE RESTRICT
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci;
+
+
+---------------------------------------------------------------------------
+CREATE TABLE portais (
+  idportal INT NOT NULL AUTO_INCREMENT,
+
+  nome VARCHAR(150) NOT NULL,
+
+  stativo TINYINT(1) NOT NULL DEFAULT 1,
+
+  dtcriacao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  dtatualizacao DATETIME NOT NULL
+      DEFAULT CURRENT_TIMESTAMP
+      ON UPDATE CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (idportal)
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO portais (nome, stativo)
+VALUES ('Coupa', 1);
+
+
+----------------------------------------------------------------------------
+CREATE TABLE portais_usuarios (
+  idportalusuario INT NOT NULL AUTO_INCREMENT,
+  idempresa INT NOT NULL,
+  idportal INT NOT NULL,
+
+  login VARCHAR(150) NOT NULL,
+  senha_hash CHAR(60) NOT NULL,
+
+  stativo TINYINT(1) NOT NULL DEFAULT 1,
+
+  dtcriacao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  dtutilizacao DATETIME NULL,
+
+  PRIMARY KEY (idportalusuario),
+
+  KEY idx_portais_usuarios_empresa (idempresa),
+  KEY idx_portais_usuarios_portal (idportal),
+  KEY idx_portais_usuarios_stativo (stativo)
+
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci;
+
+
+ALTER TABLE portais_usuarios
+ADD CONSTRAINT fk_portais_usuarios_empresa
+FOREIGN KEY (idempresa)
+REFERENCES empresas (idempresa)
+ON UPDATE CASCADE
+ON DELETE RESTRICT;
+
+
+ALTER TABLE portais_usuarios
+ADD CONSTRAINT fk_portais_usuarios_portal
+FOREIGN KEY (idportal)
+REFERENCES portais (idportal)
+ON UPDATE CASCADE
+ON DELETE RESTRICT;
