@@ -1,11 +1,19 @@
+from datetime import datetime
+
 from fastapi import FastAPI, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 
-
 from app.db import SessionLocal
-from app.models import EmpresaUsuario
-from app.schemas import LoginRequest, UsuarioResponse
+from app.models import EmpresaUsuario, PortalUsuario   # 👈 FALTAVA ISSO
+from app.schemas import (
+    LoginRequest,
+    UsuarioResponse,
+    PortalUsuarioCreate,
+    PortalUsuarioResponse
+)
+
+from crypto_utils import Encrypta
 
 app = FastAPI(title="API PowerJob")
 app.add_middleware(
@@ -75,3 +83,41 @@ def login(dados: LoginRequest, db: Session = Depends(get_db)):
         )
 
     return usuario
+
+
+@app.post("/portais/usuarios", response_model=PortalUsuarioResponse)
+def criar_portal_usuario(
+    dados: PortalUsuarioCreate,
+    db: Session = Depends(get_db)
+):
+    # Verifica duplicidade de login por portal
+    existe = (
+        db.query(PortalUsuario)
+        .filter(PortalUsuario.login == dados.login)
+        .filter(PortalUsuario.idportal == dados.idportal)
+        .first()
+    )
+
+    if existe:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Login já existe para este portal"
+        )
+
+    # 🔐 CRIPTOGRAFA A SENHA USANDO SEU MÉTODO
+    senha_encriptada = Encrypta(dados.senha)
+
+    novo_usuario = PortalUsuario(
+        idempresa=dados.idempresa,
+        idportal=dados.idportal,
+        login=dados.login,
+        senha_hash=senha_encriptada,
+        stativo=dados.stativo,
+        dtcriacao=datetime.utcnow()
+    )
+
+    db.add(novo_usuario)
+    db.commit()
+    db.refresh(novo_usuario)
+
+    return novo_usuario
