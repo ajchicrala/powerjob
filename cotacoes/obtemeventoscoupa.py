@@ -39,7 +39,7 @@ load_dotenv(CAMINHO_ENV)
 # -----------------------------------------------------------
 # ⚙️ CONFIGURAÇÕES
 # -----------------------------------------------------------
-MAX_NEXT_CLICKS = 5  # Quantos cliques no botão "Next" serão feitos
+MAX_NEXT_CLICKS = 2  # Quantos cliques no botão "Next" serão feitos
 # None = coletar todas as páginas
 # MAX_NEXT_CLICKS = None
 

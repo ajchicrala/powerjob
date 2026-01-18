@@ -1,0 +1,26 @@
+
+select * from usuarios_tipo;
+
+select * from tipo_cotacoes;
+
+/*Eventos*/
+-----------------------------------------------------------------------------
+select count(*) from eventoscoupa where cotacao_incluida = 1;
+
+select * from cotacoescoupa where idevento = 137984;
+
+select * from eventoscoupa ;
+
+/*Empresas*/
+-----------------------------------------------------------------------------
+select * from empresas;
+
+select * from empresas_usuarios;
+
+select * from empresas_eventos ee ;
+
+/*Portais*/
+-----------------------------------------------------------------------------
+select * from portais;
+
+select * from portais_usuarios;

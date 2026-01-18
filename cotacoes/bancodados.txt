@@ -95,7 +95,7 @@ CREATE TABLE empresas_usuarios (
 
   nome VARCHAR(150) NOT NULL,
   email VARCHAR(150) NOT NULL,
-  senha_hash CHAR(60) NOT NULL,
+  senha_hash CHAR(400) NOT NULL,
 
   stativo TINYINT(1) NOT NULL DEFAULT 1,
 
@@ -286,3 +286,33 @@ FOREIGN KEY (idportal)
 REFERENCES portais (idportal)
 ON UPDATE CASCADE
 ON DELETE RESTRICT;
+
+
+------------------------------------------------------------------------------
+ALTER TABLE portais
+ADD COLUMN login_url VARCHAR(255) NULL
+AFTER nome;
+
+UPDATE portais
+SET login_url = 'https://vale.coupahost.com/sessions/supplier_login'
+WHERE idportal = 1;
+
+
+------------------------------------------------------------------------------
+ALTER TABLE empresas_eventos
+ADD COLUMN idportal INT NOT NULL;
+
+ALTER TABLE empresas_eventos
+ADD CONSTRAINT fk_empresas_eventos_portal
+FOREIGN KEY (idportal)
+REFERENCES portais (idportal)
+ON UPDATE CASCADE
+ON DELETE RESTRICT;
+
+ALTER TABLE empresas_eventos
+DROP PRIMARY KEY;
+
+ALTER TABLE empresas_eventos
+ADD PRIMARY KEY (idempresa, idevento, idportal);
+
+
