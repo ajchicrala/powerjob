@@ -1,4 +1,19 @@
 from pydantic import BaseModel, EmailStr
+from datetime import date
+
+class AtualizarStatusEventoRequest(BaseModel):
+    idportal: int
+    idstatus: int
+
+class OrcamentoResponse(BaseModel):
+    idempresa: int
+    idevento: int
+    descricao: str
+    detalhes: str
+    quantidade: int
+    dtinicio: date
+    dtfim: date
+    idstatus: int
 
 class PortalUsuarioCreate(BaseModel):
     idempresa: int
@@ -6,7 +21,6 @@ class PortalUsuarioCreate(BaseModel):
     login: str
     senha: str
     stativo: int = 1
-
 
 class PortalUsuarioResponse(BaseModel):
     idportalusuario: int
@@ -27,5 +41,5 @@ class UsuarioResponse(BaseModel):
     email: str
     stativo: int
 
-    class Config:
-        from_attributes = True
+class Config:
+    from_attributes = True

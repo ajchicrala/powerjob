@@ -3,14 +3,22 @@ from datetime import datetime
 from fastapi import FastAPI, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
+from typing import List
 
 from app.db import SessionLocal
-from app.models import EmpresaUsuario, PortalUsuario   # 👈 FALTAVA ISSO
+from app.models import (
+    EmpresaUsuario,
+    PortalUsuario,
+    EmpresaEvento,
+    CotacaoCoupa
+)
 from app.schemas import (
     LoginRequest,
     UsuarioResponse,
     PortalUsuarioCreate,
-    PortalUsuarioResponse
+    PortalUsuarioResponse,
+    OrcamentoResponse,
+    AtualizarStatusEventoRequest
 )
 
 from crypto_utils import Encrypta
@@ -121,3 +129,61 @@ def criar_portal_usuario(
     db.refresh(novo_usuario)
 
     return novo_usuario
+
+@app.get(
+    "/empresas/{idempresa}/orcamentos",
+    response_model=List[OrcamentoResponse]
+)
+def listar_orcamentos_empresa(
+    idempresa: int,
+    db: Session = Depends(get_db)
+):
+    resultados = (
+        db.query(
+            EmpresaEvento.idempresa,
+            EmpresaEvento.idevento,
+            CotacaoCoupa.descricao,
+            CotacaoCoupa.detalhes,
+            CotacaoCoupa.quantidade,
+            CotacaoCoupa.dtinicio,
+            CotacaoCoupa.dtfim,
+            EmpresaEvento.idstatus,
+        )
+        .join(
+            CotacaoCoupa,
+            CotacaoCoupa.idevento == EmpresaEvento.idevento
+        )
+        .filter(EmpresaEvento.idempresa == idempresa)
+        .all()
+    )
+
+    return resultados
+
+
+@app.put(
+    "/empresas/{idempresa}/eventos/{idevento}/status",
+    status_code=status.HTTP_204_NO_CONTENT
+)
+def atualizar_status_evento(
+    idempresa: int,
+    idevento: int,
+    dados: AtualizarStatusEventoRequest,
+    db: Session = Depends(get_db)
+):
+    evento = (
+        db.query(EmpresaEvento)
+        .filter(EmpresaEvento.idempresa == idempresa)
+        .filter(EmpresaEvento.idevento == idevento)
+        .filter(EmpresaEvento.idportal == dados.idportal)
+        .first()
+    )
+
+    if not evento:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Evento não encontrado para os parâmetros informados"
+        )
+
+    evento.idstatus = dados.idstatus
+    db.commit()
+

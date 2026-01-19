@@ -316,3 +316,18 @@ ALTER TABLE empresas_eventos
 ADD PRIMARY KEY (idempresa, idevento, idportal);
 
 
+-----------------------------------------------------------------------------
+ALTER TABLE empresas_eventos
+ADD COLUMN idstatus INT NULL;
+
+
+CREATE INDEX idx_empresa_eventos_status
+ON empresas_eventos (idstatus);
+
+
+ALTER TABLE empresas_eventos
+ADD CONSTRAINT fk_empresa_eventos_status
+FOREIGN KEY (idstatus)
+REFERENCES cotacoes_status (idstatus)
+ON UPDATE CASCADE
+ON DELETE RESTRICT;

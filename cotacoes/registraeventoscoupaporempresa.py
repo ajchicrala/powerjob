@@ -13,7 +13,7 @@ load_dotenv(os.path.join(BASE_DIR, ".env"))
 # -----------------------------------------------------------
 # ⚙️ CONFIGURAÇÕES
 # -----------------------------------------------------------
-MAX_NEXT_CLICKS = 1
+MAX_NEXT_CLICKS = 3
 IDPORTAL_COUPA = 1
 
 LOGIN_URL  = "https://vale.coupahost.com/sessions/supplier_login"
