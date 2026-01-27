@@ -27,6 +27,7 @@ CREATE TABLE eventoscoupa (
 -------------------------------------------------------------------------
 
 CREATE TABLE cotacoescoupa (
+  ideventocoupa INT NOT NULL AUTO_INCREMENT,
   idcotacao INT NOT NULL,
   idevento INT NOT NULL,
 
@@ -41,7 +42,7 @@ CREATE TABLE cotacoescoupa (
   dtcotacao DATE,
   status TINYINT NOT NULL DEFAULT 0,
 
-  PRIMARY KEY (idcotacao),
+  PRIMARY KEY (ideventocoupa),
 
   KEY idx_idevento (idevento),
   KEY idx_dtinicio (dtinicio),
@@ -58,6 +59,9 @@ CREATE TABLE cotacoescoupa (
 ) ENGINE=InnoDB
   DEFAULT CHARSET=utf8mb4
   COLLATE=utf8mb4_0900_ai_ci;
+
+ALTER TABLE cotacoescoupa
+ADD UNIQUE KEY uk_evento_descricao (idevento, descricao);
 
 -------------------------------------------------------------------------
 CREATE TABLE empresas (
@@ -331,3 +335,7 @@ FOREIGN KEY (idstatus)
 REFERENCES cotacoes_status (idstatus)
 ON UPDATE CASCADE
 ON DELETE RESTRICT;
+
+-----------------------------------------------------------------------------
+ALTER TABLE eventoscoupa
+ADD COLUMN qtdcotacoes INT NOT NULL DEFAULT 0;

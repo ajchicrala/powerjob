@@ -1,6 +1,14 @@
 from pydantic import BaseModel, EmailStr
 from datetime import date
 
+class CriarStatusHistoricoRequest(BaseModel):
+    idempresa: int
+    idevento: int
+    idportal: int
+    idstatus_anterior: int
+    idstatus_atual: int
+    idusuario: int
+
 class AtualizarStatusEventoRequest(BaseModel):
     idportal: int
     idstatus: int

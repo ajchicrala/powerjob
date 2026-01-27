@@ -1,5 +1,18 @@
 from sqlalchemy import Column, Integer, String, DateTime, Date, ForeignKey
+from datetime import datetime
 from app.db import Base
+
+class CotacaoStatusHistorico(Base):
+    __tablename__ = "cotacoes_status_historico"
+
+    idhistorico = Column(Integer, primary_key=True, autoincrement=True)
+    idempresa = Column(Integer, nullable=False)
+    idevento = Column(Integer, nullable=False)
+    idportal = Column(Integer, nullable=False)
+    idstatus_anterior = Column(Integer, nullable=False)
+    idstatus_atual = Column(Integer, nullable=False)
+    idusuario = Column(Integer, nullable=False)
+    dtcriacao = Column(DateTime, default=datetime.utcnow)
 
 class EmpresaEvento(Base):
     __tablename__ = "empresas_eventos"

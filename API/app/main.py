@@ -10,7 +10,8 @@ from app.models import (
     EmpresaUsuario,
     PortalUsuario,
     EmpresaEvento,
-    CotacaoCoupa
+    CotacaoCoupa,
+    CotacaoStatusHistorico
 )
 from app.schemas import (
     LoginRequest,
@@ -18,7 +19,8 @@ from app.schemas import (
     PortalUsuarioCreate,
     PortalUsuarioResponse,
     OrcamentoResponse,
-    AtualizarStatusEventoRequest
+    AtualizarStatusEventoRequest,
+    CriarStatusHistoricoRequest
 )
 
 from crypto_utils import Encrypta
@@ -185,5 +187,25 @@ def atualizar_status_evento(
         )
 
     evento.idstatus = dados.idstatus
+    db.commit()
+
+@app.post(
+    "/eventos/status/historico",
+    status_code=status.HTTP_201_CREATED
+)
+def criar_historico_status_evento(
+    dados: CriarStatusHistoricoRequest,
+    db: Session = Depends(get_db)
+):
+    historico = CotacaoStatusHistorico(
+        idempresa=dados.idempresa,
+        idevento=dados.idevento,
+        idportal=dados.idportal,
+        idstatus_anterior=dados.idstatus_anterior,
+        idstatus_atual=dados.idstatus_atual,
+        idusuario=dados.idusuario
+    )
+
+    db.add(historico)
     db.commit()
 
