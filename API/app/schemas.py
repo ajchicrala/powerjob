@@ -16,6 +16,7 @@ class AtualizarStatusEventoRequest(BaseModel):
 class OrcamentoResponse(BaseModel):
     idempresa: int
     idevento: int
+    ideventocoupa: int
     descricao: str
     detalhes: str
     quantidade: int

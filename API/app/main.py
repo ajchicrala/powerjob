@@ -144,6 +144,7 @@ def listar_orcamentos_empresa(
         db.query(
             EmpresaEvento.idempresa,
             EmpresaEvento.idevento,
+            CotacaoCoupa.ideventocoupa,
             CotacaoCoupa.descricao,
             CotacaoCoupa.detalhes,
             CotacaoCoupa.quantidade,

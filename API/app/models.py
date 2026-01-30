@@ -27,7 +27,8 @@ class EmpresaEvento(Base):
 class CotacaoCoupa(Base):
     __tablename__ = "cotacoescoupa"
 
-    idevento = Column(Integer, primary_key=True)
+    ideventocoupa = Column(Integer, primary_key=True)
+    idevento = Column(Integer)
     descricao = Column(String)
     detalhes = Column(String)
     quantidade = Column(Integer)
